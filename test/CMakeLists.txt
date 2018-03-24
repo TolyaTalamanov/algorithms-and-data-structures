@@ -1,0 +1,7 @@
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+include_directories(../data-structures)
+set(SOURCE_FILES test_main.cpp test_binary_heap.cpp )
+add_executable(tests ${SOURCE_FILES})
+target_link_libraries(tests ${GTEST_BOTH_LIBRARIES} ${DATA_STRUCTURES_LIBRARY})
