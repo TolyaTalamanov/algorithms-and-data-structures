@@ -1,7 +1,5 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-find_package(GTest REQUIRED)
-
-include_directories(${GTEST_INCLUDE_DIRS})
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty")
 
 set(main main.cpp)
 
@@ -11,5 +9,5 @@ foreach(app_filename ${app_list})
 	get_filename_component(app ${app_filename} NAME_WE)
 	add_executable(${app} ${app_filename} ${main})
 	set_target_properties(${app} PROPERTIES COMPILE_FLAGS "-pthread")
-	target_link_libraries(${app} ${GTEST_BOTH_LIBRARIES})
+	target_link_libraries(${app} gtest)
 endforeach(app_filename)

@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include_directories(data-structures algorithms)
+include_directories(data-structures algorithms ${CMAKE_SOURCE_DIR})
 
+add_subdirectory(3rdparty/googletest)
 add_subdirectory(test)
