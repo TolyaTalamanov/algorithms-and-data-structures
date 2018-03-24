@@ -1,0 +1,35 @@
+dist: trusty
+language: cpp
+compiler: g++
+
+notification:
+  email: false
+
+sudo: required
+
+before_install:
+  #C++17
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+  #Cmake 3.11
+  - sudo apt-get purge cmake 
+  - mkdir temp && cd temp/
+  - wget https://cmake.org/files/v3.11/cmake-3.11.0-rc4.tar.gz
+  - tar -xvf cmake-3.11.0-rc4.tar.gz > /dev/null 2>&1
+  - cd cmake-3.11.0-rc4/
+  - ./bootstrap > /dev/null 2>&1
+  - sudo make -j8  > /dev/null 2>&1
+  - sudo make install > /dev/null 2>&1
+
+install:
+  #C++17
+  - sudo apt-get install -qq g++-6
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
+
+script:
+  - cd ../../
+  - mkdir build
+  - cd build
+  - cmake .. 
+  - make -j8
+  - find ./bin/ -name 'test*' -exec {} \;
