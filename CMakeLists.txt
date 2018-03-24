@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+project(algorithms-and-data-structures)
+add_definitions(-std=c++14)
+add_subdirectory(data-structures)
+add_subdirectory(test)
