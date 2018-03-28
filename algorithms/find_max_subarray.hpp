@@ -7,7 +7,7 @@
 #include <tuple>
 
 template<typename Iterator>
-auto FindMaxSubarrayInHalfArrayAndShiftMidIt(Iterator& mid, Iterator end) {
+auto MaxSumInHalfArrayAndShiftMidIter(Iterator& mid, Iterator end) {
 	auto max_it  = mid;
 	auto max_sum = *max_it;
 	auto cur_sum = 0;
@@ -18,7 +18,7 @@ auto FindMaxSubarrayInHalfArrayAndShiftMidIt(Iterator& mid, Iterator end) {
 			max_sum = cur_sum;
 			max_it = i;
 		}
-	}	
+	}
 
 	mid = max_it;
 
@@ -29,33 +29,17 @@ auto FindMaxCrossingSubarray(Iterator begin, Iterator end) {
 	auto mid = begin;
 	std::advance(mid, std::distance(begin, end) / 2);
 
-	auto max_it_left  = mid - 1;
-	auto max_sum_left = *max_it_left;
-	auto cur_sum      = 0;
+	auto r_max_left = std::reverse_iterator(mid);
+	auto end_left = std::reverse_iterator(begin);
+	auto max_sum_left = MaxSumInHalfArrayAndShiftMidIter(r_max_left, end_left);
+	auto max_left = (r_max_left + 1).base();
 
-	for (auto i = mid - 1; i >= begin; --i) {
-		cur_sum += *i;
-		if (cur_sum > max_sum_left) {
-			max_sum_left = cur_sum;
-			max_it_left  = i;
-		}
-	}
-
-	auto max_it_right  = mid;
-	auto max_sum_right = *max_it_right;
-	cur_sum            = 0; 
-
-	for (auto i = mid; i < end; ++i) {
-		cur_sum += *i;
-		if (cur_sum > max_sum_right) {
-			max_sum_right = cur_sum;
-			max_it_right  = i;
-		}
-	}
+	auto max_right = mid;
+	auto max_sum_right = MaxSumInHalfArrayAndShiftMidIter(max_right, end);
 
 	auto max_sum = max_sum_left + max_sum_right;
-	auto t = std::make_tuple(max_it_left, max_it_right, max_sum);
-	return t; 
+	auto t = std::make_tuple(max_left, max_right, max_sum);
+	return t;
 }
 
 template<typename Iterator>
@@ -66,7 +50,7 @@ FindMaxSubarray(Iterator begin, Iterator end) {
 
 	if (std::distance(begin, end) == 1) {
 		auto t = std::make_tuple(begin, end, *begin);
-		return t; 
+		return t;
 	}
 
 	auto mid = begin;
