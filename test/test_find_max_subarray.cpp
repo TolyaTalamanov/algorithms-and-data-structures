@@ -17,8 +17,8 @@ TEST(FindMaxSubarray, FindMaxSubarrayInHalfArrayAndShiftMidIt) {
 	auto r_it_mid = reverse_iterator(m_l);
 	auto r_it_begin = reverse_iterator(begin);
 
-	auto max_l = FindMaxSubarrayInHalfArrayAndShiftMidIt(r_it_mid, r_it_begin);
-	auto max_r = FindMaxSubarrayInHalfArrayAndShiftMidIt(m_r, end);
+	auto max_l = MaxSumInHalfArrayAndShiftMidIter(r_it_mid, r_it_begin);
+	auto max_r = MaxSumInHalfArrayAndShiftMidIter(m_r, end);
 
 	EXPECT_EQ(1000, max_l);
 	EXPECT_EQ(1000, *r_it_mid);
