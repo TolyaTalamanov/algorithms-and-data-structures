@@ -5,72 +5,74 @@
 
 #include <iterator>
 #include <tuple>
+#include <algorithm>
+
+using std::tuple;
+using std::iterator_traits;
 
 template<typename Iterator>
-auto MaxSumInHalfArrayAndShiftMidIter(Iterator& mid, Iterator end) {
-	auto max_it  = mid;
-	auto max_sum = *max_it;
-	auto cur_sum = 0;
+auto MaxSumInHalfArrayAndShiftMidIter(Iterator* mid, Iterator end) {
+  typedef typename iterator_traits<Iterator>::value_type obj_type;
 
-	for (auto i = mid; i < end; ++i) {
-		cur_sum += *i;
-		if (cur_sum > max_sum) {
-			max_sum = cur_sum;
-			max_it = i;
-		}
-	}
+  auto max_it  = *mid;
+  auto max_sum = *max_it;
+  obj_type cur_sum{};
 
-	mid = max_it;
+  for (auto i = *mid; i != end; ++i) {
+    cur_sum += *i;
+    if (cur_sum > max_sum) {
+      max_sum = cur_sum;
+      max_it = i;
+    }
+  }
 
-	return max_sum;
+  *mid = max_it;
+
+  return max_sum;
 }
 template<typename Iterator>
 auto FindMaxCrossingSubarray(Iterator begin, Iterator end) {
-	auto mid = begin;
-	std::advance(mid, std::distance(begin, end) / 2);
+  auto mid = begin;
+  std::advance(mid, std::distance(begin, end) / 2);
 
-	auto r_max_left = std::reverse_iterator(mid);
-	auto end_left = std::reverse_iterator(begin);
-	auto max_sum_left = MaxSumInHalfArrayAndShiftMidIter(r_max_left, end_left);
-	auto max_left = (r_max_left + 1).base();
+  auto r_max_left = std::reverse_iterator(mid);
+  auto end_left = std::reverse_iterator(begin);
+  auto max_sum_left = MaxSumInHalfArrayAndShiftMidIter(&r_max_left, end_left);
+  std::advance(r_max_left, 1);
+  auto max_left = r_max_left.base();
 
-	auto max_right = mid;
-	auto max_sum_right = MaxSumInHalfArrayAndShiftMidIter(max_right, end);
+  auto max_right = mid;
+  auto max_sum_right = MaxSumInHalfArrayAndShiftMidIter(&max_right, end);
 
-	auto max_sum = max_sum_left + max_sum_right;
-	auto t = std::make_tuple(max_left, max_right, max_sum);
-	return t;
+  auto max_sum = max_sum_left + max_sum_right;
+
+  return std::make_tuple(max_left, max_right, max_sum);
 }
 
 template<typename Iterator>
-std::tuple<Iterator, Iterator, typename std::iterator_traits<Iterator>::value_type>
+tuple<Iterator, Iterator, typename iterator_traits<Iterator>::value_type>
 FindMaxSubarray(Iterator begin, Iterator end) {
-	typedef typename std::iterator_traits<Iterator>::value_type obj_type;
-	typedef typename std::tuple<Iterator, Iterator, obj_type> tuple;
+  typedef typename iterator_traits<Iterator>::value_type obj_type;
+  typedef typename std::tuple<Iterator, Iterator, obj_type> tuple_t;
 
-	if (std::distance(begin, end) == 1) {
-		auto t = std::make_tuple(begin, end, *begin);
-		return t;
-	}
+  if (std::distance(begin, end) == 1) {
+    return std::make_tuple(begin, end, *begin);
+  }
 
-	auto mid = begin;
-	std::advance(mid, std::distance(begin, end) / 2);
+  auto mid = begin;
+  std::advance(mid, std::distance(begin, end) / 2);
 
-	tuple left_tuple  = FindMaxSubarray<Iterator>(begin, mid);
-	tuple right_tuple = FindMaxSubarray<Iterator>(mid, end);
-	tuple midle_tuple = FindMaxCrossingSubarray<Iterator>(begin, end);
+  tuple_t left_tuple  = FindMaxSubarray<Iterator>(begin, mid);
+  tuple_t right_tuple = FindMaxSubarray<Iterator>(mid, end);
+  tuple_t midle_tuple = FindMaxCrossingSubarray<Iterator>(begin, end);
 
-	if (std::get<2>(left_tuple) >= std::get<2>(right_tuple) &&
-			std::get<2>(left_tuple) >= std::get<2>(midle_tuple)) {
-		return left_tuple;
-	}
+  auto tuple_comp = [](const auto& t1, const auto& t2) {
+                      return std::get<2>(t1) < std::get<2>(t2);
+                    };
 
-	if (std::get<2>(right_tuple) >= std::get<2>(left_tuple) &&
-			std::get<2>(right_tuple) >= std::get<2>(midle_tuple)) {
-		return right_tuple;
-	}
+  auto max_tuple = std::max(left_tuple, right_tuple, tuple_comp);
 
-	return midle_tuple;
+  return std::max(max_tuple, midle_tuple, tuple_comp);
 }
 
 #endif  // ALGORITHMS_FIND_MAX_SUBARRAY_HPP_
