@@ -1,12 +1,27 @@
 /* Copyright 2018 TolyaTalamanov */
+
 #ifndef ALGORITHMS_FIND_MAX_SUBARRAY_HPP_
 #define ALGORITHMS_FIND_MAX_SUBARRAY_HPP_
 
 #include <iterator>
 #include <tuple>
-#include <chrono>
-#include <thread>
 
+template<typename Iterator>
+auto FindMaxSubarrayInHalfArrayAndShiftMidIt(Iterator& mid, Iterator end) {
+	auto max_it  = mid;
+	auto max_sum = *max_it;
+ 	auto cur_sum = 0;
+
+	for (auto i = mid; i < end; ++i) {
+			cur_sum += *i;
+		if (cur_sum > max_sum) {
+			max_sum = cur_sum;
+			max_it = i;
+		}
+	}	
+	mid = max_it;
+	return max_sum;
+}
 template<typename Iterator>
 auto FindMaxCrossingSubarray(Iterator begin, Iterator end) {
 	auto mid = begin;
@@ -37,7 +52,6 @@ auto FindMaxCrossingSubarray(Iterator begin, Iterator end) {
 	}
 
 	auto max_sum = max_sum_left + max_sum_right;
-	typedef decltype(max_sum) sum_type;
 	auto t = std::make_tuple(max_it_left, max_it_right, max_sum);
 	return t; 
 }

@@ -4,6 +4,32 @@
 #include <gtest/gtest.h>
 #include "find_max_subarray.hpp"
 
+using std::reverse_iterator;
+
+TEST(FindMaxSubarray, FindMaxSubarrayInHalfArrayAndShiftMidIt) {
+	std::vector<int> v{1, 2, -3, 4, 5, 10, -15, 0};
+	auto begin = v.begin();
+	auto end   = v.end();
+	auto mid   = begin;
+	std::advance(mid, std::distance(begin, end) / 2);
+	auto m_l = mid - 1;
+	auto m_r = mid;
+
+	auto r_it_mid = reverse_iterator(m_l);
+	std::advance(r_it_mid, -1);
+	auto r_it_begin = reverse_iterator(m_l);
+
+	auto max_l = FindMaxSubarrayInHalfArrayAndShiftMidIt(r_it_mid, r_it_begin);
+
+	auto max_r = FindMaxSubarrayInHalfArrayAndShiftMidIt(m_r, end);
+
+	EXPECT_EQ(4, max_l);
+	EXPECT_EQ(4, *m_l);
+
+	EXPECT_EQ(15, max_r);
+	EXPECT_EQ(10, *m_r);
+}
+
 TEST(FindMaxSubarray, FindInPositiveArray) {
 	std::vector<int> v{1, 2, 3, 4, 5, 10, 15};
 	auto t = FindMaxSubarray(v.begin(), v.end());
