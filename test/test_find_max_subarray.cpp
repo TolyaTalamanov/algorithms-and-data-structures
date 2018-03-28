@@ -7,27 +7,23 @@
 using std::reverse_iterator;
 
 TEST(FindMaxSubarray, FindMaxSubarrayInHalfArrayAndShiftMidIt) {
-	std::vector<int> v{1, 2, -3, 4, 5, 10, -15, 0};
+	std::vector<int> v{-1000000, 1000, 1, 2, -3, 4, 5, 10, -15, 0, 100};
 	auto begin = v.begin();
 	auto end   = v.end();
 	auto mid   = begin;
 	std::advance(mid, std::distance(begin, end) / 2);
-	auto m_l = mid - 1;
+	auto m_l = mid;
 	auto m_r = mid;
-
 	auto r_it_mid = reverse_iterator(m_l);
-	std::advance(r_it_mid, -1);
-	auto r_it_begin = reverse_iterator(m_l);
+	auto r_it_begin = reverse_iterator(begin);
 
 	auto max_l = FindMaxSubarrayInHalfArrayAndShiftMidIt(r_it_mid, r_it_begin);
-
 	auto max_r = FindMaxSubarrayInHalfArrayAndShiftMidIt(m_r, end);
 
-	EXPECT_EQ(4, max_l);
-	EXPECT_EQ(4, *m_l);
-
-	EXPECT_EQ(15, max_r);
-	EXPECT_EQ(10, *m_r);
+	EXPECT_EQ(1000, max_l);
+	EXPECT_EQ(1000, *r_it_mid);
+	EXPECT_EQ(104, max_r);
+	EXPECT_EQ(100, *m_r);
 }
 
 TEST(FindMaxSubarray, FindInPositiveArray) {
@@ -57,4 +53,3 @@ TEST(FindMaxCrossingSubarray, CheckCorrectPositiveAndNegative) {
 
 	EXPECT_EQ(24, std::get<2>(t));
 }
-
